@@ -35,7 +35,11 @@ class SteamSpider(scrapy.Spider):
         platforms = response.xpath('//div[@class="sysreq_tabs"]/div/text()').extract()
         items["name"] = ''.join(name)
         items["category"] = ', '.join(category).replace('All Games', '')
-        items["reviews_count"] = ''.join(reviews_count).replace("\n", "").replace("\t", "").replace("\r", "").split(')(')[1].replace(')', '').replace('(', "")
+        reviews_c = ''.join(reviews_count).replace("\n", "").replace("\t", "").replace("\r", "").split(')(')
+        if len(reviews_c) > 1:
+            items["reviews_count"] = reviews_c[1].replace(')', '').replace('(', "")
+        else:
+            items["reviews_count"] = reviews_c[0].replace(')', '').replace('(', "")
         items["mark"] = str(int(''.join(mark).replace("\n", "").replace("\t", "").replace("\r", "").split('%')[0][2:]) / 10)
         items["release_date"] = ''.join(release_date)
         items["developer"] = ''.join(developer)
